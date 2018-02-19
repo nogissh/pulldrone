@@ -15,8 +15,6 @@ class WaraiDecider:
 
   def __init__(self):
 
-    self.d_input = np.array([])
-
     self.d_natural = self.read_csv("natural")
     self.d_fake = self.read_csv("fake")
     return None
@@ -62,6 +60,27 @@ class WaraiDecider:
     return result
 
 
+  def run(self, inputter):
+
+    # 呼び出し部分
+    # 入力は numpy 配列であること 
+
+    self.d_input = inputter
+
+    if self.dec_natural() == True:
+      return 1.0 #笑顔
+
+    if self.dec_fake() == True:
+      return 0.5 #愛想笑い
+
+    return 0.0 #その他
+
+
+  def test(self):
+    sample = self.read_csv("input")
+    print(self.run(sample))
+
 if __name__ == "__main__":
 
   t = WaraiDecider()
+  t.test()
