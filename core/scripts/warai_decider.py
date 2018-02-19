@@ -18,10 +18,7 @@ class WaraiDecider:
 
 
   def read_csv(self, filename):
-
-    datadir = "" #入力ファイルがある場所
-    data = np.loadtxt("{}{}.csv".format(datadir, filename), delimiter=",")
-    return data
+    return np.loadtxt("{}.csv".format(filename), delimiter=",")
 
 
   def majority(self, d_input, d_teacher):
@@ -31,10 +28,9 @@ class WaraiDecider:
     value = np.sum(d_teacher[:, :-1] * d_input, axis=1)
     value += d_teacher[:, -1]
     if np.sum(value > 0) / len(value) >= 0.5:
-      result = True
+      return True
     else:
-      result = False
-    return result
+      return False
 
 
   def dec_natural(self):
@@ -43,8 +39,7 @@ class WaraiDecider:
 
     cp_input = np.copy(self.d_input)
     cp_natural = np.copy(self.d_natural)
-    result = self.majority(cp_input, cp_natural)
-    return result
+    return self.majority(cp_input, cp_natural)
 
 
   def dec_fake(self):
@@ -53,8 +48,7 @@ class WaraiDecider:
 
     cp_input = np.copy(self.d_input)
     cp_fake = np.copy(self.d_fake)
-    result = self.majority(cp_input, cp_fake)
-    return result
+    return self.majority(cp_input, cp_fake)
 
 
   def run(self, inputter):
