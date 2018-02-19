@@ -8,7 +8,6 @@
 import csv
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class WaraiDecider:
@@ -31,7 +30,7 @@ class WaraiDecider:
 
     # 判定する
 
-    value = np.sum(d_teacher[:, :-1] * d_input[:-1], axis=1)
+    value = np.sum(d_teacher[:, :-1] * d_input, axis=1)
     value += d_teacher[:, -1]
     if np.sum(value > 0) / len(value) >= 0.5:
       result = True
