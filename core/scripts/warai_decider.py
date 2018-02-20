@@ -10,10 +10,12 @@ import numpy as np
 
 class WaraiDecider:
 
-  def __init__(self):
+  def __init__(self, ip_address):
 
-    self.d_natural = self.read_csv("natural")
-    self.d_fake = self.read_csv("fake")
+    self.playerAddress = ip_address           # プレイヤーのIPアドレス
+    self.d_natural = self.read_csv("natural") # 自然な笑顔のパラメータ
+    self.d_fake = self.read_csv("fake")       # 愛想笑いのパラメータ
+    self.d_input = ""                         # プレイヤーの顔座標データ
     return None
 
 
@@ -51,12 +53,10 @@ class WaraiDecider:
     return self.majority(cp_input, cp_fake)
 
 
-  def run(self, inputter):
+  def run(self):
 
     # 呼び出し部分
     # 入力は numpy 配列であること 
-
-    self.d_input = inputter
 
     if self.dec_natural() == True:
       return 1.0 #笑顔
@@ -67,11 +67,5 @@ class WaraiDecider:
     return 0.0 #その他
 
 
-  def test(self):
-    sample = self.read_csv("input")
-    print(self.run(sample))
-
 if __name__ == "__main__":
-
-  t = WaraiDecider()
-  t.test()
+  t = WaraiDecider("133.78.81.152")
