@@ -5,8 +5,10 @@ import numpy as np
 import warai_decider #笑顔判定クラス
 
 
-#
-player_1_ip = "133.78.81.152"
+timelimit = 15 #制限時間
+
+# プレイヤーのIPアドレス
+player_1_ip = "127.0.0.1" #"133.78.81.152"
 player_2_ip = "133:78.81.***"
 
 # 多数決機械を用意（引数：IP Address）
@@ -22,8 +24,13 @@ s.setblocking(0)
 data = ""
 address = ""
 
-# 待ち
+
+#ゲームスタート
+starttime = time.time()
 while True:
+
+  if (time.time() - starttime) > timelimit:
+    break #タイムアップ
 
   try:
     data, address = s.recvfrom(4096) #常にUDP着信を監視
@@ -34,21 +41,33 @@ while True:
   else:
 
     # 送信元を判別して入力情報を適切に代入
-    if address == player_1.playerAddress:
-      player_1.d_input = data.decode()
-      player_1.d_input = np.array(player_1.d_input.split(","))
-    elif address == player_2.playerAddress:
-      player_2.d_input = data
-      player_2.d_input = np.array(player_2.d_input.split(","))
+    if address[0] == player_1.playerAddress:
+      data = data.decode().split(",")
+      player_1.d_input = np.array(list(map(float, data)))
+      player_1.waiting = True
 
-    # 参加者全員の入力がTrueなら点数を計測する
-    if (player_1.d_input) and (player_1.d_input != ""):
+    if address[0] == player_2.playerAddress:
+      data = data.decode().split(",")
+      player_2.d_input = np.array(list(map(float, data)))
+      player_2.waiting = True
+
+    # 参加者全員の待機がTrueなら点数を計測する
+    if player_1.waiting and player_2.waiting:
 
       try:
-        print(player_1.run())
-        player_1.d_input = ""
+        moverange = player_1.run() - player_2.run()
+        player_1.waiting = False
+        player_2.waiting = False
+
+        # ドローン移動命令
+        # /ドローン移動命令
 
       except ValueError:
         pass
 
-    print("rcbd: ", data.decode())
+
+# 終了後処理
+
+# /終了後処理
+
+print("finished")
