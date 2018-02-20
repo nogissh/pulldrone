@@ -16,4 +16,4 @@ while True:
     pass
 
   else:
-    print("rcbd: ", data)
+    print("rcbd: ", data.decode())
