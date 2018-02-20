@@ -16,6 +16,7 @@ class WaraiDecider:
     self.d_natural = self.read_csv("natural") # 自然な笑顔のパラメータ
     self.d_fake = self.read_csv("fake")       # 愛想笑いのパラメータ
     self.d_input = ""                         # プレイヤーの顔座標データ
+    self.waiting = False                      # 待機状態
     return None
 
 
