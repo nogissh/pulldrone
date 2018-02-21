@@ -1,21 +1,24 @@
 {% load static %}
 <html>
-  <head>
-    <title>ドローン引き</title>
-  </head>
-  <body>
-    <div>
-      <h1>ドローン引きスタート画面</h1>
-      <p>スタートボタンを押してください</p>
-    </div>
-    <div>
-      <form action="{% url 'pulldrone:toplay' %}" method="POST">
-        {% csrf_token %}
-        <input type="text" name="timelimit" placeholder="timelimit (sec)">
-        <input type="text" name="player_1_ip" placeholder="IP Address of player_1">
-        <input type="text" name="player_2_ip" placeholder="IP Address of player_2">
-        <button>スタート</button>
-      </form>
-    </div>
-  </body>
+<head>
+<title>ドローン引き</title>
+</head>
+<body>
+<div>
+<h1>ドローン引きスタート画面</h1>
+<p>スタートボタンを押してください</p>
+</div>
+<div>
+<form action="{% url 'pulldrone:toplay' %}" method="POST">
+{% csrf_token %}
+<h2>制限時間</h2>
+<input type="text" name="timelimit" value="{{ timelimit }}" placeholder="timelimit (sec)">
+<h2>プレイヤー1のIPアドレス</h2>
+<input type="text" name="player_1_ip" value="{{ player_1_ip }}" placeholder="IP Address of player_1">
+<h2>プレイヤー2のIPアドレス</h2>
+<input type="text" name="player_2_ip" value="{{ player_2_ip }}" placeholder="IP Address of player_2">
+<button>スタート</button>
+</form>
+</div>
+</body>
 </html>

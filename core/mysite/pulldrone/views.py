@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils import datastructures
 
 import ipaddress, socket, time
 import numpy as np
@@ -9,7 +10,15 @@ from pulldrone.pypro import warai_decider #笑顔判定クラス
 
 # Create your views here.
 def index(request):
-  return render(request, "pulldrone/index.html")
+
+  content = {}
+  try:
+    content["timelimit"] = request.POST["timelimit"]
+    content["player_1_ip"] = request.POST["player_1_ip"]
+    content["player_2_ip"] = request.POST["player_2_ip"]
+  except datastructures.MultiValueDictKeyError:
+    pass
+  return render(request, "pulldrone/index.html", content)
 
 
 def toplay(request):
@@ -86,10 +95,17 @@ def toplay(request):
 
   """ 終了後処理 """
   #send("finished") #終了時にドローンに送るメッセージ
-  del player_1, player_2 #クラスの削除
   """ /終了後処理 """
 
-  return render(request, "pulldrone/finished.html")
+  print(timelimit)
+  content = {
+
+    "timelimit": str(timelimit),
+    "player_1_ip": player_1.playerAddress,
+    "player_2_ip": player_2.playerAddress,
+  }
+  del player_1, player_2 #クラスの削除
+  return render(request, "pulldrone/finished.html", content)
 
 
 def error(request):

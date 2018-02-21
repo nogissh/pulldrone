@@ -3,6 +3,11 @@
 {% block content %}
 
 <p>終了しました。</p>
-<br>
-<p><a href="{% url 'pulldrone:index' %}">TOPに戻る</a></p>
+<form action="{% url 'pulldrone:index' %}" method="POST">
+{% csrf_token %}
+<input type="hidden" name="timelimit" value="{{ timelimit }}">
+<input type="hidden" name="player_1_ip" value="{{ player_1_ip}}">
+<input type="hidden" name="player_2_ip" value="{{ player_2_ip}}">
+<button type="submit">TOPに戻る</button>
+</form>
 {% endblock %}
