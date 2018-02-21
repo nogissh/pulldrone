@@ -1,0 +1,21 @@
+{% load static %}
+<html>
+  <head>
+    <title>ドローン引き</title>
+  </head>
+  <body>
+    <div>
+      <h1>ドローン引きスタート画面</h1>
+      <p>スタートボタンを押してください</p>
+    </div>
+    <div>
+      <form action="{% url 'pulldrone:toplay' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="timelimit" placeholder="timelimit (sec)">
+        <input type="text" name="player_1_ip" placeholder="IP Address of player_1">
+        <input type="text" name="player_2_ip" placeholder="IP Address of player_2">
+        <button>start</button>
+      </form>
+    </div>
+  </body>
+</html>
