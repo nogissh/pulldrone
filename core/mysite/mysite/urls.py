@@ -18,6 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
 
-  path("pulldrone/", include("udpcatch.urls")),
+  path("pulldrone/", include("pulldrone.urls")),
   path('admin/', admin.site.urls),
 ]

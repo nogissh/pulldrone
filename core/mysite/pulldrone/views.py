@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 import ipaddress, socket, time
 import numpy as np
 
-from udpcatch.pypro import warai_decider #笑顔判定クラス
+from pulldrone.pypro import warai_decider #笑顔判定クラス
 
 
 # Create your views here.

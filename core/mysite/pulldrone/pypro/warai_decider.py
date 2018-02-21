@@ -21,7 +21,7 @@ class WaraiDecider:
 
 
   def read_csv(self, filename):
-    return np.loadtxt("udpcatch/data/{}.csv".format(filename), delimiter=",")
+    return np.loadtxt("pulldrone/data/{}.csv".format(filename), delimiter=",")
 
 
   def majority(self, d_input, d_teacher):
