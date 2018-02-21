@@ -5,11 +5,11 @@ import numpy as np
 import warai_decider #笑顔判定クラス
 
 
-timelimit = 15 #制限時間
+timelimit = 1000 #制限時間
 
 # プレイヤーのIPアドレス
-player_1_ip = "127.0.0.1" #"133.78.81.152"
-player_2_ip = "133:78.81.***"
+player_1_ip = "133.78.81.152" #大野木
+player_2_ip = "133.78.82.7"   #松村
 
 # 多数決機械を用意（引数：IP Address）
 player_1 = warai_decider.WaraiDecider(player_1_ip)
@@ -17,13 +17,12 @@ player_2 = warai_decider.WaraiDecider(player_2_ip)
 
 # ソケットを用意（受信のみ）
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.bind(("", 8000))
+s.bind(("", 8080))
 s.setblocking(0)
 
 # UDP受信のための変数を初期化
 data = ""
 address = ""
-
 
 #ゲームスタート
 starttime = time.time()
