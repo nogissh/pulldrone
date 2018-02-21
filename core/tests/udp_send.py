@@ -8,4 +8,4 @@ f.close()
 text = text[:-2]
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.sendto(text.encode(), ("133.78.120.61", 8000))
+s.sendto(text.encode(), ("133.78.120.61", 8080))
