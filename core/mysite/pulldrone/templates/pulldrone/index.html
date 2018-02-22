@@ -11,12 +11,19 @@
 <div>
 <form action="{% url 'pulldrone:toplay' %}" method="POST">
 {% csrf_token %}
+<hr>
 <h2>制限時間</h2>
 <input type="text" name="timelimit" value="{{ timelimit }}" placeholder="timelimit (sec)">
 <h2>プレイヤー1のIPアドレス</h2>
 <input type="text" name="player_1_ip" value="{{ player_1_ip }}" placeholder="IP Address of player_1">
 <h2>プレイヤー2のIPアドレス</h2>
 <input type="text" name="player_2_ip" value="{{ player_2_ip }}" placeholder="IP Address of player_2">
+<hr>
+<h2>ドローンコントローラマシンのIPアドレス</h2>
+<input type="text" name="dronecontroler_ip" value="{{ dronecontroler_ip }}" placeholder="IP Address of dronecontroler">
+<h2>ドローンコントローラマシンのポート番号</h2>
+<input type="text" name="dronecontroler_port" value="{{ dronecontroler_port }}" placeholder="PORT number of dronecontroler">
+<hr>
 <button>スタート</button>
 </form>
 </div>
