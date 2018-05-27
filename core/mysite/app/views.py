@@ -46,11 +46,6 @@ def toplay(request):
     droneclient_port,
   )
 
-  # ドローンを飛ばす
-  droneclient.send('start')
-
-  """ /ドローン終わり """
-
   #
   # フォームの情報
   #
@@ -81,15 +76,16 @@ def toplay(request):
   player_1 = warai_decider.WaraiDecider(request.POST["player_1_ip"])
   player_2 = warai_decider.WaraiDecider(request.POST["player_2_ip"])
 
-  # ホストの設定
+  # TCPサーバの設定まわり
   host = 'localhost'
   port = 8080
-
-  # TCPサーバの設定まわり
   server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
   server.bind((host, port))
   server.listen(10)
+
+  # ドローンを飛ばす
+  droneclient.send('start')
 
   #ゲームスタート
   starttime = time.time()
@@ -167,7 +163,6 @@ def toplay(request):
   """ /終了後処理 """
 
   content = {
-
     "timelimit": str(timelimit),
     "player_1_ip": player_1.playerAddress,
     "player_2_ip": player_2.playerAddress,
