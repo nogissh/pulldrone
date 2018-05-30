@@ -77,7 +77,7 @@ def toplay(request):
   player_2 = warai_decider.WaraiDecider(request.POST["player_2_ip"])
 
   # TCPサーバの設定まわり
-  host = '133.78.84.215'
+  host = '133.78.120.61'
   port = 8080
   server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -85,7 +85,7 @@ def toplay(request):
   server.listen(10)
 
   # ドローンを飛ばす
-  droneclient.send('start')
+  droneclient.send('9999')
 
   #ゲームスタート
   starttime = time.time()
@@ -142,7 +142,7 @@ def toplay(request):
         if len(tmp) != 240:
           continue #要素の数が240ではないときスキップ
         else:
-          player_1.d_input = tmp
+          player_2.d_input = tmp
         player_2.waiting = True
       else:
         pass
@@ -151,8 +151,6 @@ def toplay(request):
 
     # 参加者全員の待機がTrueなら点数を計測する
     if player_1.waiting and player_2.waiting:
-
-      print('join in')
 
       try:
         # ドローンに送る情報を生成
@@ -169,7 +167,7 @@ def toplay(request):
         pass
 
   """ 終了後処理 """
-  droneclient.send('end')
+  droneclient.send('-9999')
   """ /終了後処理 """
 
   content = {
