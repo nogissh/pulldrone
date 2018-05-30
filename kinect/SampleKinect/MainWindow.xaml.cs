@@ -12,8 +12,8 @@ namespace FaceTrackingSample
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class MainWindow : Window
-    {   //プログラムの動作状況を確認するための変数
+    public partial class MainWindow : Window{
+        //プログラムの動作状況を確認するための変数
         int finish = 0;
 
         //座標格納変数
@@ -26,10 +26,8 @@ namespace FaceTrackingSample
         double testY = 0;
 
         // 解像度・フレームレート
-        private ColorImageFormat rgbFormat
-            = ColorImageFormat.RgbResolution640x480Fps30;
-        private const DepthImageFormat depthFormat
-            = DepthImageFormat.Resolution320x240Fps30;
+        private ColorImageFormat rgbFormat = ColorImageFormat.RgbResolution640x480Fps30;
+        private const DepthImageFormat depthFormat= DepthImageFormat.Resolution320x240Fps30;
 
         // KinectSensorChooser
         private KinectSensorChooser kinectChooser = new KinectSensorChooser();
@@ -55,46 +53,38 @@ namespace FaceTrackingSample
         //顔の傾き
         public float rotation_x, rotation_y, rotation_z;
 
-        public MainWindow()
-        {
+        public MainWindow(){
             InitializeComponent();
         }
 
         // 初期化処理(Kinectセンサーやバッファ類の初期化)
-        private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
+        private void WindowLoaded(object sender, RoutedEventArgs e){
             kinectChooser.KinectChanged += KinectChanged;
             kinectChooser.Start();
         }
 
         // 終了処理
-        private void WindowClosed(object sender, EventArgs e)
-        {
+        private void WindowClosed(object sender, EventArgs e){
             kinectChooser.Stop();
         }
 
         // Kinectセンサーの挿抜イベントに対し、初期化/終了処理を呼び出す
-        private void KinectChanged(object sender, KinectChangedEventArgs args)
-        {
-            if (args.OldSensor != null)
-                UninitKinectSensor(args.OldSensor);
-
-            if (args.NewSensor != null)
-                InitKinectSensor(args.NewSensor);
+        private void KinectChanged(object sender, KinectChangedEventArgs args){
+            if (args.OldSensor != null) UninitKinectSensor(args.OldSensor);
+            if (args.NewSensor != null) InitKinectSensor(args.NewSensor);
         }
 
         // Kinectセンサーの初期化
-        private void InitKinectSensor(KinectSensor kinect)
-        {
+        private void InitKinectSensor(KinectSensor kinect){
             // ストリームの有効化
-            ColorImageStream clrStream = kinect.ColorStream;
+            ColorImageStream clrStream           = kinect.ColorStream;
             clrStream.Enable(rgbFormat);
-            DepthImageStream depthStream = kinect.DepthStream;
+            DepthImageStream depthStream         = kinect.DepthStream;
             depthStream.Enable(depthFormat);
-            SkeletonStream skelStream = kinect.SkeletonStream;
-            kinect.DepthStream.Range = DepthRange.Near;
+            SkeletonStream skelStream            = kinect.SkeletonStream;
+            kinect.DepthStream.Range             = DepthRange.Near;
             skelStream.EnableTrackingInNearRange = true;
-            skelStream.TrackingMode = SkeletonTrackingMode.Seated;
+            skelStream.TrackingMode              = SkeletonTrackingMode.Seated;
             skelStream.Enable();
 
             // バッファの初期化
@@ -103,22 +93,17 @@ namespace FaceTrackingSample
             skeletonBuffer = new Skeleton[skelStream.FrameSkeletonArrayLength];
 
             // 画面に表示するビットマップの初期化
-            bmpBuffer = new RenderTargetBitmap(clrStream.FrameWidth,
-                                               clrStream.FrameHeight,
-                                               96, 96, PixelFormats.Default);
+            bmpBuffer = new RenderTargetBitmap(clrStream.FrameWidth,  clrStream.FrameHeight,  96,  96,  PixelFormats.Default);
             rgbImage.Source = bmpBuffer;
 
             // イベントハンドラの登録
             kinect.AllFramesReady += AllFramesReady;
-
             faceTracker = new FaceTracker(kinect);
         }
 
         // Kinectセンサーの終了処理
-        private void UninitKinectSensor(KinectSensor kinect)
-        {
-            if (faceTracker != null)
-            {
+        private void UninitKinectSensor(KinectSensor kinect){
+            if (faceTracker != null){
                 faceTracker.Dispose();
                 faceTracker = null;
             }
@@ -128,16 +113,13 @@ namespace FaceTrackingSample
         // FrameReady イベントのハンドラ
         // (Kinectセンサーの情報をもとにFaceTrackingを行い、
         //  認識した顔の各点に赤い点を描画)
-        private void AllFramesReady(object sender, AllFramesReadyEventArgs e)
-        {
+        private void AllFramesReady(object sender, AllFramesReadyEventArgs e){
             KinectSensor kinect = sender as KinectSensor;
 
             using (ColorImageFrame colorImageFrame = e.OpenColorImageFrame())
             using (DepthImageFrame depthImageFrame = e.OpenDepthImageFrame())
-            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
-            {
-                if (colorImageFrame == null || depthImageFrame == null
-                    || skeletonFrame == null)
+            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame()){
+                if (colorImageFrame == null || depthImageFrame == null || skeletonFrame == null)
                     return;
 
                 // 顔の各点の座標を保持するバッファ
@@ -147,16 +129,11 @@ namespace FaceTrackingSample
                 depthImageFrame.CopyPixelDataTo(depthBuffer);
                 skeletonFrame.CopySkeletonDataTo(skeletonBuffer);
 
-                foreach (Skeleton skeleton in skeletonBuffer)
-                {
+                foreach (Skeleton skeleton in skeletonBuffer){
                     // トラックできている骨格だけを対象とする
-                    if (skeleton.TrackingState == SkeletonTrackingState.Tracked)
-                    {
+                    if (skeleton.TrackingState == SkeletonTrackingState.Tracked){
                         // 今回のフレームにFaceTrackingを適用
-                        FaceTrackFrame frame
-                            = faceTracker.Track(rgbFormat, pixelBuffer,
-                                                depthFormat, depthBuffer,
-                                                skeleton);
+                        FaceTrackFrame frame = faceTracker.Track(rgbFormat, pixelBuffer,  depthFormat, depthBuffer,skeleton);
 
                         // FaceTrackingが成功したら顔の各点を取得
                         if (frame.TrackSuccessful)
@@ -223,44 +200,47 @@ namespace FaceTrackingSample
                     //TCP通信
                     //サーバーのIPアドレス（または、ホスト名）とポート番号
                     string ipaddress = "133.78.120.61";
-                    int port = 9000;
+                    int port = 10000;
 
-                    //TcpClientを作成し、サーバーと接続する
-                    System.Net.Sockets.TcpClient tcp =
-                        new System.Net.Sockets.TcpClient(ipaddress, port);
+                    try
+                    {
+                        //TcpClientを作成し、サーバーと接続する
+                        System.Net.Sockets.TcpClient tcp = new System.Net.Sockets.TcpClient(ipaddress, port);
+                        System.Net.Sockets.NetworkStream ns = tcp.GetStream();
 
-                    //NetworkStreamを取得する
-                    System.Net.Sockets.NetworkStream ns = tcp.GetStream();
+                        // スリープ
+                        System.Threading.Thread.Sleep(1000);
 
-                    // スリープ
-                    System.Threading.Thread.Sleep(1000);
+                        //データを送信する
+                        System.Text.Encoding enc = System.Text.Encoding.UTF8;
+                        byte[] sendBytes = enc.GetBytes(zahyo);
+                        ns.Write(sendBytes, 0, sendBytes.Length);
+                        Console.WriteLine("座標を送信しました");
 
-                    //データを送信する
-                    System.Text.Encoding enc = System.Text.Encoding.UTF8;
-                    byte[] sendBytes = enc.GetBytes(zahyo);
-                    ns.Write(sendBytes, 0, sendBytes.Length);
-                    Console.WriteLine("座標を送信しました");
+                        //サーバーから送られたデータを受信する
+                        System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                        byte[] resBytes = new byte[1024];
+                        int resSize = 0;
 
-                    //サーバーから送られたデータを受信する
-                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                    byte[] resBytes = new byte[1024];
-                    int resSize = 0;
+                        // メモリをバッファに蓄積
+                        ms.Write(resBytes, 0, resSize);
 
-                    // メモリをバッファに蓄積
-                    ms.Write(resBytes, 0, resSize);
+                        //受信したデータを文字列に変換
+                        string resMsg = enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
 
-                    //受信したデータを文字列に変換
-                    string resMsg = enc.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+                        ms.Close();
+                        Console.WriteLine("切断しました。");
 
-                    ms.Close();
-                    Console.WriteLine("切断しました。");
+                        //座標初期化
+                        zahyo = null;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("鯖未接続！！");
+                    }
                 }
-                //座標初期化
-                zahyo = null;
-
                 // 画面に表示するビットマップに描画
                 // bmpBuffer.Render(drawVisual);
-
             }
         }
     }
