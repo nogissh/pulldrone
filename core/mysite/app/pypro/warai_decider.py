@@ -48,7 +48,6 @@ class WaraiDecider:
   def dec_fake(self):
 
     # 愛想笑いかを判定
-
     cp_input = np.copy(self.d_input)
     cp_fake = np.copy(self.d_fake)
     return self.majority(cp_input, cp_fake)

@@ -77,7 +77,7 @@ def toplay(request):
   player_2 = warai_decider.WaraiDecider(request.POST["player_2_ip"])
 
   # TCPサーバの設定まわり
-  host = 'localhost'
+  host = '133.78.120.61'
   port = 8080
   server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -85,7 +85,7 @@ def toplay(request):
   server.listen(10)
 
   # ドローンを飛ばす
-  droneclient.send('start')
+  droneclient.send('9999')
 
   #ゲームスタート
   starttime = time.time()
@@ -105,7 +105,7 @@ def toplay(request):
 
       try:
         # データを受け取る
-        catch = clientsock.recv(1024)
+        catch = clientsock.recv(2**12)
 
         # データをデコード
         catch = catch.decode()
@@ -130,11 +130,19 @@ def toplay(request):
     try:
       if address[0] == player_1.playerAddress:
         coordinate = coordinate.split(",")
-        player_1.d_input = np.array(list(map(float, coordinate)))
+        tmp = np.array(list(map(np.float64, coordinate)))
+        if len(tmp) != 240:
+          continue #要素の数が240ではないときスキップ
+        else:
+          player_1.d_input = tmp
         player_1.waiting = True
       elif address[0] == player_2.playerAddress:
         coordinate = coordinate.split(",")
-        player_2.d_input = np.array(list(map(float, coordinate)))
+        tmp = np.array(list(map(np.float64, coordinate)))
+        if len(tmp) != 240:
+          continue #要素の数が240ではないときスキップ
+        else:
+          player_2.d_input = tmp
         player_2.waiting = True
       else:
         pass
@@ -159,7 +167,7 @@ def toplay(request):
         pass
 
   """ 終了後処理 """
-  droneclient.send('end')
+  droneclient.send('-9999')
   """ /終了後処理 """
 
   content = {
