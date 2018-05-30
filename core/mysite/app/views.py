@@ -105,7 +105,7 @@ def toplay(request):
 
       try:
         # データを受け取る
-        catch = clientsock.recv(1024)
+        catch = clientsock.recv(2**12)
 
         # データをデコード
         catch = catch.decode()
