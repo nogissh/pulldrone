@@ -77,7 +77,7 @@ def toplay(request):
   player_2 = warai_decider.WaraiDecider(request.POST["player_2_ip"])
 
   # TCPサーバの設定まわり
-  host = 'localhost'
+  host = '133.78.84.215'
   port = 8080
   server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -130,11 +130,19 @@ def toplay(request):
     try:
       if address[0] == player_1.playerAddress:
         coordinate = coordinate.split(",")
-        player_1.d_input = np.array(list(map(float, coordinate)))
+        tmp = np.array(list(map(np.float64, coordinate)))
+        if len(tmp) != 240:
+          continue #要素の数が240ではないときスキップ
+        else:
+          player_1.d_input = tmp
         player_1.waiting = True
       elif address[0] == player_2.playerAddress:
         coordinate = coordinate.split(",")
-        player_2.d_input = np.array(list(map(float, coordinate)))
+        tmp = np.array(list(map(np.float64, coordinate)))
+        if len(tmp) != 240:
+          continue #要素の数が240ではないときスキップ
+        else:
+          player_1.d_input = tmp
         player_2.waiting = True
       else:
         pass
@@ -143,6 +151,8 @@ def toplay(request):
 
     # 参加者全員の待機がTrueなら点数を計測する
     if player_1.waiting and player_2.waiting:
+
+      print('join in')
 
       try:
         # ドローンに送る情報を生成
