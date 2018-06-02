@@ -75,7 +75,6 @@ def toplay(request):
   # 多数決機械を用意（引数：IP Address）
   player_1 = warai_decider.WaraiDecider(request.POST["player_1_ip"])
   player_2 = warai_decider.WaraiDecider(request.POST["player_2_ip"])
-  print(player_1.d_natural)
 
   # TCPサーバの設定まわり
   host = '133.78.120.61'
@@ -87,6 +86,9 @@ def toplay(request):
 
   # ドローンを飛ばす
   droneclient.send('9999')
+
+  # 差分施行をカウント
+  count = 0
 
   #ゲームスタート
   starttime = time.time()
@@ -120,11 +122,11 @@ def toplay(request):
         clientsock.sendall(resp)
 
       except OSError:
-        print("OSError, finished.")
+        # print("OSError, finished.")
         break
 
       except BrokenPipeError:
-        print("BrokenPipeError, finished.")
+        # print("BrokenPipeError, finished.")
         break
 
     # 送信元を判別して入力情報を適切に代入
@@ -160,6 +162,7 @@ def toplay(request):
       player_2.waiting = False
 
       # ドローンに移動命令
+      count += 1
       print('moverange:', moverange)
       droneclient.send(moverange)
 
@@ -173,6 +176,9 @@ def toplay(request):
     "player_2_ip": player_2.playerAddress,
     "dronecontroler_ip": droneclient_ip,
     "dronecontroler_port": droneclient_port,
+    "battle_count": count,
+    "player1_mochiten": player_1.mochiten,
+    "player2_mochiten": player_2.mochiten,
   }
   del player_1, player_2 #クラスの削除
   return render(request, "app/finished.html", content)

@@ -19,6 +19,8 @@ class WaraiDecider:
     self.d_input = ""                         # プレイヤーの顔座標データ
     self.waiting = False                      # 待機状態
 
+    self.mochiten = 0                         # 持ち点
+
     self.set_default_params()
 
 
@@ -28,12 +30,13 @@ class WaraiDecider:
 
   def set_default_params(self):
 
-    # DBから値を取得
+    # DBから値を取得（自然な笑顔）
     tmp_natural = Natural.objects.all().values().latest('id')
     tmp_natural = tmp_natural['params'].split('\r\n')
     for i in range(len(tmp_natural)):
       tmp_natural[i] = list(map(np.float64, tmp_natural[i].split(',')))
 
+    # DBから値を取得（愛想笑い）
     tmp_fake = Fake.objects.all().values().latest('id')
     tmp_fake = tmp_fake['params'].split('\r\n')
     for i in range(len(tmp_fake)):
@@ -79,10 +82,14 @@ class WaraiDecider:
     # 入力は numpy 配列であること 
 
     if self.dec_natural() == True:
-      return 1.0 #笑顔
+      point = 1.0
+      self.mochiten += point
+      return point #笑顔
 
     if self.dec_fake() == True:
-      return 0.5 #愛想笑い
+      point = 0.5
+      self.mochiten += point
+      return point #愛想笑い
 
     return 0.0 #その他
 

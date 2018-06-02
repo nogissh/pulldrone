@@ -2,6 +2,18 @@
 
 {% block content %}
 
+<h1>結果</h1>
+<table>
+  <tr>
+    <td>プレイヤー1</td>
+    <td>{{ player1_mochiten }}</td>
+  </tr>
+  <tr>
+    <td>プレイヤー2</td>
+    <td>{{ player2_mochiten }}</td>
+  </tr>
+</table>
+
 <p>終了しました。</p>
 <form action="{% url 'app:index' %}" method="POST">
 {% csrf_token %}
