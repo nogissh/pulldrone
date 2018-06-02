@@ -4,8 +4,9 @@
 1台のkinectの座標データを受け取り、笑度をひとつ返す。
 
 """
-
 import numpy as np
+
+from app.models import Fake, Natural
 
 
 class WaraiDecider:
@@ -13,15 +14,24 @@ class WaraiDecider:
   def __init__(self, ip_address):
 
     self.playerAddress = ip_address           # プレイヤーのIPアドレス
-    self.d_natural = self.read_csv("natural") # 自然な笑顔のパラメータ
-    self.d_fake = self.read_csv("fake")       # 愛想笑いのパラメータ
+    self.d_natural = None                     # 自然な笑顔のパラメータ
+    self.d_fake = None                        # 愛想笑いのパラメータ
     self.d_input = ""                         # プレイヤーの顔座標データ
     self.waiting = False                      # 待機状態
-    return None
-
 
   def read_csv(self, filename):
     return np.loadtxt("pulldrone/data/{}.csv".format(filename), delimiter=",")
+
+
+  def set_default_params(self):
+
+    # DBから値を取得
+    tmp_natural = Natural.objects.all().values().latest('id')
+    tmp_fake = Fake.objects.all().values().latest('id')
+
+    # 代入
+    self.d_natural = tmp_natural['params']
+    self.d_fake = tmp_fake['params']
 
 
   def majority(self, d_input, d_teacher):
