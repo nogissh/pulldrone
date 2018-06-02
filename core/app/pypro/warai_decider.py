@@ -19,6 +19,9 @@ class WaraiDecider:
     self.d_input = ""                         # プレイヤーの顔座標データ
     self.waiting = False                      # 待機状態
 
+    self.set_default_params()
+
+
   def read_csv(self, filename):
     return np.loadtxt("pulldrone/data/{}.csv".format(filename), delimiter=",")
 
@@ -27,11 +30,18 @@ class WaraiDecider:
 
     # DBから値を取得
     tmp_natural = Natural.objects.all().values().latest('id')
+    tmp_natural = tmp_natural['params'].split('\r\n')
+    for i in range(len(tmp_natural)):
+      tmp_natural[i] = list(map(np.float64, tmp_natural[i].split(',')))
+
     tmp_fake = Fake.objects.all().values().latest('id')
+    tmp_fake = tmp_fake['params'].split('\r\n')
+    for i in range(len(tmp_fake)):
+      tmp_fake[i] = list(map(np.float64, tmp_fake[i].split(',')))
 
     # 代入
-    self.d_natural = tmp_natural['params']
-    self.d_fake = tmp_fake['params']
+    self.d_natural = tmp_natural
+    self.d_fake = tmp_fake
 
 
   def majority(self, d_input, d_teacher):

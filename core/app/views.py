@@ -75,6 +75,7 @@ def toplay(request):
   # 多数決機械を用意（引数：IP Address）
   player_1 = warai_decider.WaraiDecider(request.POST["player_1_ip"])
   player_2 = warai_decider.WaraiDecider(request.POST["player_2_ip"])
+  print(player_1.d_natural)
 
   # TCPサーバの設定まわり
   host = '133.78.120.61'
@@ -129,16 +130,14 @@ def toplay(request):
     # 送信元を判別して入力情報を適切に代入
     try:
       if address[0] == player_1.playerAddress:
-        coordinate = coordinate.split(",")
-        tmp = np.array(list(map(np.float64, coordinate)))
+        tmp = np.array(list(map(np.float64, coordinate.split(","))))
         if len(tmp) != 240:
           continue #要素の数が240ではないときスキップ
         else:
           player_1.d_input = tmp
         player_1.waiting = True
       elif address[0] == player_2.playerAddress:
-        coordinate = coordinate.split(",")
-        tmp = np.array(list(map(np.float64, coordinate)))
+        tmp = np.array(list(map(np.float64, coordinate.split(","))))
         if len(tmp) != 240:
           continue #要素の数が240ではないときスキップ
         else:
@@ -147,24 +146,22 @@ def toplay(request):
       else:
         pass
     except ValueError:
-      pass
+      print('ValueError on Getting Facepoint')
 
     # 参加者全員の待機がTrueなら点数を計測する
     if player_1.waiting and player_2.waiting:
 
-      try:
-        # ドローンに送る情報を生成
-        moverange = player_1.run() - player_2.run()
-        moverange = str(moverange)
+      # ドローンに送る情報を生成
+      moverange = player_1.run() - player_2.run()
+      moverange = str(moverange)
 
-        # プレイヤーの待ち状態を変更
-        player_1.waiting = False
-        player_2.waiting = False
+      # プレイヤーの待ち状態を変更
+      player_1.waiting = False
+      player_2.waiting = False
 
-        # ドローンに移動命令
-        droneclient.send(moverange)
-      except ValueError:
-        pass
+      # ドローンに移動命令
+      print('moverange:', moverange)
+      droneclient.send(moverange)
 
   """ 終了後処理 """
   droneclient.send('-9999')
